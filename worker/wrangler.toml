@@ -1,0 +1,8 @@
+name = "pixelkava-goalbar"
+main = "src/index.js"
+compatibility_date = "2026-06-23"
+
+# KV-сховище: у коді доступне як env.GOALS
+[[kv_namespaces]]
+binding = "GOALS"
+id = "211017be6c48487d988731dca28d40da"

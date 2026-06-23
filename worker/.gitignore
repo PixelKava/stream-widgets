@@ -1,0 +1,3 @@
+# Cloudflare Wrangler кеш / збірка — не версіонуємо
+.wrangler/
+node_modules/

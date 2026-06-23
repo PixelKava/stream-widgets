@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Безпека: строга CSP -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<title>PixelKava — Starting Soon timer</title>
+<style>
+  html, body { margin: 0; background: transparent; overflow: hidden;
+    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; }
+  .box { display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 100vh; gap: 4px; }
+  .label { font-weight: 800; font-size: var(--ls); color: var(--text); letter-spacing: .5px;
+    text-shadow: -1.5px -1.5px 0 rgba(0,0,0,.55), 1.5px -1.5px 0 rgba(0,0,0,.55),
+      -1.5px 1.5px 0 rgba(0,0,0,.55), 1.5px 1.5px 0 rgba(0,0,0,.55), 0 3px 10px rgba(0,0,0,.5); }
+  .time { font-weight: 800; font-size: var(--ts); color: var(--accent); line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    text-shadow: -2px -2px 0 rgba(0,0,0,.55), 2px -2px 0 rgba(0,0,0,.55),
+      -2px 2px 0 rgba(0,0,0,.55), 2px 2px 0 rgba(0,0,0,.55), 0 4px 14px rgba(0,0,0,.5); }
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="label" id="label"></div>
+    <div class="time" id="time"></div>
+  </div>
+<script>
+  const P = new URLSearchParams(location.search);
+  const g = (k, d) => (P.get(k) ?? d);
+  const THEMES = { teal:'#1FA89A', coral:'#FF7A6B', sun:'#F6B53C', lilac:'#8E7CDB', green:'#6FB36B' };
+  const accent = THEMES[g('theme','')] || g('color', '#F6B53C');
+  const r = document.documentElement.style;
+  r.setProperty('--accent', accent);
+  r.setProperty('--text', g('text', '#FFFFFF'));
+  const sz = Math.max(20, +g('size', 120));
+  r.setProperty('--ts', sz + 'px');
+  r.setProperty('--ls', Math.round(sz * 0.33) + 'px');
+  document.getElementById('label').textContent = g('label', 'Starting Soon');
+  const doneMsg = g('done', 'Starting now!');
+  let total = Math.max(0, Math.round(parseFloat(g('minutes', 10)) * 60));
+  const timeEl = document.getElementById('time');
+  const fmt = s => Math.floor(s/60) + ':' + String(s%60).padStart(2, '0');
+  function render(){
+    if (total < 0) { timeEl.textContent = doneMsg;
+      timeEl.style.fontSize = Math.round(sz * 0.62) + 'px'; return false; }
+    timeEl.textContent = fmt(total); return true;
+  }
+  render();
+  const iv = setInterval(() => { total--; if (!render()) clearInterval(iv); }, 1000);
+</script>
+</body>
+</html>
