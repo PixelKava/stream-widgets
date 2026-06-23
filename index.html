@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Безпека: CSP — лише власні ресурси, без сторонніх скриптів/мережі -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Free OBS Goal Bar — no signup, no code | PixelKava</title>
+<meta name="description" content="Free goal bar widget for OBS / Twitch — donation or follower goal. No sign-up, no code, privacy-friendly, 5 languages. Copy the link and add it as a Browser Source.">
+<link rel="canonical" href="https://pixelkava.github.io/stream-widgets/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23FFF8EE'/><circle cx='30' cy='52' r='11' fill='%23FF7A6B'/><circle cx='50' cy='52' r='11' fill='%23F6B53C'/><circle cx='70' cy='52' r='11' fill='%231FA89A'/></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PixelKava">
+<meta property="og:title" content="Free OBS Goal Bar — no signup, no code">
+<meta property="og:description" content="Free goal bar widget for OBS / Twitch. No sign-up, no code, privacy-friendly, 5 languages.">
+<meta property="og:image" content="https://pixelkava.github.io/stream-widgets/preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free OBS Goal Bar — no signup, no code">
+<meta name="twitter:description" content="Free goal bar widget for OBS / Twitch. No sign-up, privacy-friendly, 5 languages.">
+<meta name="twitter:image" content="https://pixelkava.github.io/stream-widgets/preview.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PixelKava Goal Bar","applicationCategory":"Goal bar widget for OBS / Twitch","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"inLanguage":["en","uk","es","pt","de"],"author":{"@type":"Organization","name":"PixelKava"}}
+</script>
+<style>
+  :root{ --cream:#FFF8EE; --ink:#3A4A5A; --teal:#1FA89A; --coral:#FF7A6B;
+         --sun:#F6B53C; --lilac:#8E7CDB; --green:#6FB36B; --muted:#8A96A0; --line:#EDE5D7; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif;color:var(--ink);background:var(--cream);line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px}
+  .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .langs{display:flex;gap:6px;flex-wrap:wrap}
+  .langs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted)}
+  .langs button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .nav{display:flex;gap:8px;margin:16px 0 6px}
+  .nav a{text-decoration:none;font-weight:700;font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#fff}
+  .nav a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  h1{font-size:29px;margin:16px 0 4px}
+  .sub{color:var(--muted);margin-bottom:22px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}
+  label{display:block;font-weight:700;font-size:14px;margin:14px 0 5px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .preview{border-radius:14px;overflow:hidden;min-height:170px;
+    background-image:linear-gradient(45deg,#333a45 25%,transparent 25%),linear-gradient(-45deg,#333a45 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#333a45 75%),linear-gradient(-45deg,transparent 75%,#333a45 75%);
+    background-color:#2b3440;background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}
+  iframe{width:100%;height:200px;border:0;display:block}
+  .hint{font-size:13px;color:var(--muted);margin-top:6px}
+  .urlbox{margin-top:18px}
+  textarea{width:100%;height:70px;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:13px;font-family:monospace;resize:none}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .btn{padding:12px 20px;border:0;border-radius:12px;background:var(--coral);color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+  .btn.alt{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn:hover{filter:brightness(1.04)}
+  .swatches{display:flex;gap:8px;margin-top:4px;align-items:center;flex-wrap:wrap}
+  .sw{width:34px;height:34px;border-radius:9px;cursor:pointer;border:3px solid transparent}
+  .sw.on{border-color:var(--ink)}
+  .sw.custom{display:flex;align-items:center;justify-content:center;border:2px dashed var(--muted);font-size:18px;color:var(--muted);position:relative;overflow:hidden}
+  .sw.custom input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .steps{margin-top:26px} .steps ol{margin-left:20px} .steps li{margin:6px 0}
+  .tag{display:inline-block;background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+  footer{margin-top:30px;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><span class="dot" style="background:var(--coral)"></span><span class="dot" style="background:var(--sun)"></span><span class="dot" style="background:var(--teal)"></span>&nbsp;PixelKava</div>
+    <div class="langs" id="langs">
+      <button data-lang="en">English</button><button data-lang="uk">Українська</button>
+      <button data-lang="es">Español</button><button data-lang="pt">Português</button>
+      <button data-lang="de">Deutsch</button>
+    </div>
+  </div>
+
+  <h1><span data-i18n="title"></span> <span class="tag" data-i18n="free"></span></h1>
+  <p class="sub" data-i18n="sub"></p>
+
+  <div class="grid">
+    <div class="card">
+      <label id="imp_label" style="margin-top:0"></label>
+      <div style="display:flex;gap:8px">
+        <input id="importurl" placeholder="goal.html?label=...">
+        <button class="btn alt" id="importbtn" style="margin-top:0;white-space:nowrap"></button>
+      </div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+      <label data-i18n="l_label"></label>
+      <input id="label" value="Donation Goal">
+      <div class="two">
+        <div><label data-i18n="l_current"></label><input id="current" type="number" value="35"></div>
+        <div><label data-i18n="l_goal"></label><input id="goal" type="number" value="100"></div>
+      </div>
+      <div class="two">
+        <div><label data-i18n="l_prefix"></label><input id="prefix" value="$" data-i18n-ph="ph_prefix"></div>
+        <div><label data-i18n="l_suffix"></label><input id="suffix" value="" data-i18n-ph="ph_suffix"></div>
+      </div>
+      <label data-i18n="l_theme"></label>
+      <div class="swatches" id="swatches">
+        <div class="sw" data-theme="teal"  style="background:#1FA89A"></div>
+        <div class="sw" data-theme="coral" style="background:#FF7A6B"></div>
+        <div class="sw" data-theme="sun"   style="background:#F6B53C"></div>
+        <div class="sw" data-theme="lilac" style="background:#8E7CDB"></div>
+        <div class="sw" data-theme="green" style="background:#6FB36B"></div>
+        <label class="sw custom" title="custom">🎨<input id="customcolor" type="color" value="#1FA89A"></label>
+      </div>
+      <div class="two">
+        <div><label data-i18n="l_style"></label>
+          <select id="style">
+            <option value="rounded" data-i18n="st_rounded"></option>
+            <option value="flat" data-i18n="st_flat"></option>
+            <option value="striped" data-i18n="st_striped"></option>
+          </select>
+        </div>
+        <div><label data-i18n="l_text"></label><input id="text" type="color" value="#ffffff" style="height:42px;padding:4px"></div>
+      </div>
+      <label data-i18n="l_done"></label>
+      <input id="done" value="" data-i18n-ph="ph_done">
+      <label id="mile_label"></label>
+      <input id="milestones" value="" placeholder="25, 50, 75">
+      <label><span data-i18n="l_height"></span> <span id="hval">30</span> px</label>
+      <input id="height" type="range" min="18" max="60" value="30">
+    </div>
+
+    <div class="card">
+      <label data-i18n="l_preview"></label>
+      <div class="preview"><iframe id="prev"></iframe></div>
+      <p class="hint" data-i18n="hint_preview"></p>
+      <div class="urlbox">
+        <label data-i18n="l_url"></label>
+        <textarea id="url" readonly></textarea>
+        <p class="hint" data-i18n="hint_size"></p>
+        <div class="btns">
+          <button class="btn" id="copy" data-i18n="btn_copy"></button>
+          <button class="btn alt" id="newtab" data-i18n="btn_newtab"></button>
+          <button class="btn alt" id="reset" data-i18n="btn_reset"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps card">
+    <b data-i18n="obs_title"></b>
+    <ol>
+      <li data-i18n="obs_1"></li><li data-i18n="obs_2"></li>
+      <li data-i18n="obs_3"></li><li data-i18n="obs_4"></li>
+    </ol>
+    <p class="hint" data-i18n="hint_v1"></p>
+  </div>
+
+  <footer data-i18n="footer"></footer>
+</div>
+
+<script>
+const T = {
+  en:{title:"Goal Bar — OBS widget",free:"free",sub:"Set up your goal bar (donations / subscribers) → copy the link → add it in OBS as a Browser Source. No sign-up, no code.",l_label:"Title (label)",l_current:"Current",l_goal:"Goal",l_prefix:"Prefix",l_suffix:"Suffix",ph_prefix:"$ / € / £",ph_suffix:"e.g. subs",l_theme:"Theme (bar color)",l_style:"Bar style",st_rounded:"Rounded",st_flat:"Flat",st_striped:"Striped",l_done:"Message at 100% (optional)",ph_done:"e.g. Goal reached!",l_text:"Text color",l_height:"Bar height:",l_preview:"Live preview (transparent — like in OBS)",hint_preview:"Checkered = transparency (your scene shows here in OBS).",l_url:"Link for OBS",hint_size:"Recommended OBS source size: width ~600, height ~150.",btn_copy:"📋 Copy link",btn_copied:"✓ Copied!",btn_newtab:"↗ Open widget",btn_reset:"↺ Reset",obs_title:"How to add it in OBS:",obs_1:"Copy the link above.",obs_2:"In OBS: Sources → + → Browser.",obs_3:"Paste the link into the URL field. Size: width ~600, height ~150.",obs_4:"Done — the bar appears on your scene. To update the number, change Current here and paste the new link.",hint_v1:"v1 — the number is set manually. Auto-sync (StreamElements / Ko-fi) is planned (v2).",footer:"Goal Bar · © 2026 PixelKava · free · ko-fi.com/pixelkava"},
+  uk:{title:"Goal Bar — віджет цілі для OBS",free:"безкоштовно",sub:"Налаштуй смужку цілі (донати / підписники) → скопіюй посилання → встав в OBS як Browser Source. Без реєстрації, без коду.",l_label:"Назва (label)",l_current:"Поточне",l_goal:"Ціль",l_prefix:"Префікс",l_suffix:"Суфікс",ph_prefix:"$ / ₴ / €",ph_suffix:"напр. subs",l_theme:"Тема (колір смужки)",l_style:"Стиль смужки",st_rounded:"Закруглена",st_flat:"Пряма",st_striped:"Смугаста",l_done:"Повідомлення при 100% (необов'язково)",ph_done:"напр. Ціль досягнута!",l_text:"Колір тексту",l_height:"Висота смужки:",l_preview:"Живе прев'ю (прозоре — як в OBS)",hint_preview:"Клітинки = прозорість (у OBS тут буде твоя сцена).",l_url:"Посилання для OBS",hint_size:"Рекомендований розмір джерела в OBS: ширина ~600, висота ~150.",btn_copy:"📋 Скопіювати",btn_copied:"✓ Скопійовано!",btn_newtab:"↗ Відкрити віджет",btn_reset:"↺ Скинути",obs_title:"Як вставити в OBS:",obs_1:"Скопіюй посилання вище.",obs_2:"В OBS: Sources → + → Browser (Браузер).",obs_3:"Встав посилання в поле URL. Розмір: ширина ~600, висота ~150.",obs_4:"Готово — смужка з'явиться на сцені. Щоб оновити число — зміни «Поточне» і встав нове посилання.",hint_v1:"v1 — число задається вручну. Автопідтягування (StreamElements / Ko-fi) — у планах (v2).",footer:"Goal Bar · © 2026 PixelKava · безкоштовно · ko-fi.com/pixelkava"},
+  es:{title:"Goal Bar — widget de meta para OBS",free:"gratis",sub:"Configura tu barra de meta (donaciones / suscriptores) → copia el enlace → añádelo en OBS como Browser Source. Sin registro, sin código.",l_label:"Título (label)",l_current:"Actual",l_goal:"Meta",l_prefix:"Prefijo",l_suffix:"Sufijo",ph_prefix:"$ / € / £",ph_suffix:"p. ej. subs",l_theme:"Tema (color de la barra)",l_style:"Estilo de barra",st_rounded:"Redondeada",st_flat:"Plana",st_striped:"Rayada",l_done:"Mensaje al 100% (opcional)",ph_done:"p. ej. ¡Meta alcanzada!",l_text:"Color del texto",l_height:"Altura de la barra:",l_preview:"Vista previa en vivo (transparente — como en OBS)",hint_preview:"Cuadros = transparencia (aquí se verá tu escena en OBS).",l_url:"Enlace para OBS",hint_size:"Tamaño recomendado de la fuente en OBS: ancho ~600, alto ~150.",btn_copy:"📋 Copiar",btn_copied:"✓ ¡Copiado!",btn_newtab:"↗ Abrir widget",btn_reset:"↺ Restablecer",obs_title:"Cómo añadirlo en OBS:",obs_1:"Copia el enlace de arriba.",obs_2:"En OBS: Fuentes → + → Navegador (Browser).",obs_3:"Pega el enlace en el campo URL. Tamaño: ancho ~600, alto ~150.",obs_4:"Listo — la barra aparece en tu escena. Para actualizar el número, cambia Actual y pega el nuevo enlace.",hint_v1:"v1 — el número se establece manualmente. La sincronización automática (StreamElements / Ko-fi) está planeada (v2).",footer:"Goal Bar · © 2026 PixelKava · gratis · ko-fi.com/pixelkava"},
+  pt:{title:"Goal Bar — widget de meta para OBS",free:"grátis",sub:"Configure sua barra de meta (doações / inscritos) → copie o link → adicione no OBS como Browser Source. Sem cadastro, sem código.",l_label:"Título (label)",l_current:"Atual",l_goal:"Meta",l_prefix:"Prefixo",l_suffix:"Sufixo",ph_prefix:"$ / € / R$",ph_suffix:"ex. subs",l_theme:"Tema (cor da barra)",l_style:"Estilo da barra",st_rounded:"Arredondada",st_flat:"Reta",st_striped:"Listrada",l_done:"Mensagem aos 100% (opcional)",ph_done:"ex. Meta alcançada!",l_text:"Cor do texto",l_height:"Altura da barra:",l_preview:"Pré-visualização ao vivo (transparente — como no OBS)",hint_preview:"Xadrez = transparência (sua cena aparece aqui no OBS).",l_url:"Link para OBS",hint_size:"Tamanho recomendado da fonte no OBS: largura ~600, altura ~150.",btn_copy:"📋 Copiar",btn_copied:"✓ Copiado!",btn_newtab:"↗ Abrir widget",btn_reset:"↺ Redefinir",obs_title:"Como adicionar no OBS:",obs_1:"Copie o link acima.",obs_2:"No OBS: Fontes → + → Navegador (Browser).",obs_3:"Cole o link no campo URL. Tamanho: largura ~600, altura ~150.",obs_4:"Pronto — a barra aparece na sua cena. Para atualizar o número, altere Atual e cole o novo link.",hint_v1:"v1 — o número é definido manualmente. Sincronização automática (StreamElements / Ko-fi) está planejada (v2).",footer:"Goal Bar · © 2026 PixelKava · grátis · ko-fi.com/pixelkava"},
+  de:{title:"Goal Bar — OBS-Ziel-Widget",free:"kostenlos",sub:"Richte deine Ziel-Leiste ein (Spenden / Abonnenten) → kopiere den Link → füge ihn in OBS als Browser-Quelle ein. Keine Anmeldung, kein Code.",l_label:"Titel (label)",l_current:"Aktuell",l_goal:"Ziel",l_prefix:"Präfix",l_suffix:"Suffix",ph_prefix:"$ / € / £",ph_suffix:"z. B. subs",l_theme:"Thema (Balkenfarbe)",l_style:"Balkenstil",st_rounded:"Abgerundet",st_flat:"Flach",st_striped:"Gestreift",l_done:"Nachricht bei 100% (optional)",ph_done:"z. B. Ziel erreicht!",l_text:"Textfarbe",l_height:"Balkenhöhe:",l_preview:"Live-Vorschau (transparent — wie in OBS)",hint_preview:"Karos = Transparenz (hier erscheint deine Szene in OBS).",l_url:"Link für OBS",hint_size:"Empfohlene OBS-Quellengröße: Breite ~600, Höhe ~150.",btn_copy:"📋 Kopieren",btn_copied:"✓ Kopiert!",btn_newtab:"↗ Widget öffnen",btn_reset:"↺ Zurücksetzen",obs_title:"So fügst du es in OBS ein:",obs_1:"Kopiere den Link oben.",obs_2:"In OBS: Quellen → + → Browser.",obs_3:"Füge den Link ins URL-Feld ein. Größe: Breite ~600, Höhe ~150.",obs_4:"Fertig — die Leiste erscheint in deiner Szene. Um die Zahl zu aktualisieren, ändere Aktuell und füge den neuen Link ein.",hint_v1:"v1 — die Zahl wird manuell gesetzt. Auto-Sync (StreamElements / Ko-fi) ist geplant (v2).",footer:"Goal Bar · © 2026 PixelKava · kostenlos · ko-fi.com/pixelkava"}
+};
+const IMP = {
+  en:{l:"Have a widget link? Paste it to edit:",b:"Load",m:"Milestones (values, comma-separated)"},
+  uk:{l:"Маєш посилання віджета? Встав, щоб редагувати:",b:"Завантажити",m:"Етапи (значення через кому)"},
+  es:{l:"¿Tienes un enlace del widget? Pégalo para editar:",b:"Cargar",m:"Hitos (valores, separados por comas)"},
+  pt:{l:"Tem um link do widget? Cole para editar:",b:"Carregar",m:"Marcos (valores, separados por vírgula)"},
+  de:{l:"Hast du einen Widget-Link? Zum Bearbeiten einfügen:",b:"Laden",m:"Meilensteine (Werte, Komma-getrennt)"}
+};
+const FIELDS = ['label','current','goal','prefix','suffix','text','height','style','done','milestones'];
+const el = {}; FIELDS.forEach(i => el[i] = document.getElementById(i));
+const customEl = document.getElementById('customcolor');
+let lang = 'en', theme = 'teal', useCustom = false;
+
+function applyLang(l){
+  lang = T[l] ? l : 'en'; const d = T[lang];
+  document.querySelectorAll('[data-i18n]').forEach(n=>{ const k=n.getAttribute('data-i18n'); if(d[k]!=null) n.textContent=d[k]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(n=>{ const k=n.getAttribute('data-i18n-ph'); if(d[k]!=null) n.placeholder=d[k]; });
+  document.documentElement.lang = lang;
+  document.querySelectorAll('#langs button').forEach(b=>b.classList.toggle('on', b.dataset.lang===lang));
+  document.getElementById('imp_label').textContent = IMP[lang].l;
+  document.getElementById('importbtn').textContent = IMP[lang].b;
+  document.getElementById('mile_label').textContent = IMP[lang].m;
+  try{ localStorage.setItem('pk_lang', lang); }catch(e){}
+}
+function buildParams(){
+  const p = new URLSearchParams();
+  p.set('label', el.label.value);
+  p.set('current', el.current.value || '0');
+  p.set('goal', el.goal.value || '100');
+  if (el.prefix.value) p.set('prefix', el.prefix.value);
+  if (el.suffix.value) p.set('suffix', el.suffix.value);
+  if (useCustom) p.set('color', customEl.value); else p.set('theme', theme);
+  p.set('text', el.text.value);
+  p.set('height', el.height.value);
+  if (el.style.value !== 'rounded') p.set('style', el.style.value);
+  if (el.done.value) p.set('done', el.done.value);
+  if (el.milestones.value) p.set('milestones', el.milestones.value);
+  return p.toString();
+}
+function save(){
+  const s = {}; FIELDS.forEach(i=>s[i]=el[i].value);
+  s.theme=theme; s.useCustom=useCustom; s.custom=customEl.value;
+  try{ localStorage.setItem('pk_goalbar', JSON.stringify(s)); }catch(e){}
+}
+function refresh(){
+  document.getElementById('hval').textContent = el.height.value;
+  const qs = buildParams();
+  document.getElementById('prev').src = 'goal.html?' + qs;
+  const abs = new URL('goal.html', location.href); abs.search = qs;
+  document.getElementById('url').value = abs.toString();
+  save();
+}
+function selectSwatch(t){
+  theme = t; useCustom = false;
+  document.querySelectorAll('#swatches .sw[data-theme]').forEach(x=>x.classList.toggle('on', x.dataset.theme===t));
+  document.querySelector('.sw.custom').classList.remove('on');
+}
+FIELDS.forEach(i=>el[i].addEventListener('input', refresh));
+document.querySelectorAll('#swatches .sw[data-theme]').forEach(s=>s.addEventListener('click',()=>{ selectSwatch(s.dataset.theme); refresh(); }));
+customEl.addEventListener('input', ()=>{
+  useCustom = true;
+  document.querySelectorAll('#swatches .sw[data-theme]').forEach(x=>x.classList.remove('on'));
+  document.querySelector('.sw.custom').classList.add('on');
+  refresh();
+});
+document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>applyLang(b.dataset.lang)));
+document.getElementById('copy').addEventListener('click',()=>{
+  const t=document.getElementById('url'); t.select(); navigator.clipboard?.writeText(t.value);
+  const b=document.getElementById('copy'); b.textContent=T[lang].btn_copied; setTimeout(()=>b.textContent=T[lang].btn_copy,1500);
+});
+document.getElementById('newtab').addEventListener('click',()=>window.open(document.getElementById('url').value,'_blank','noopener'));
+document.getElementById('reset').addEventListener('click',()=>{
+  try{ localStorage.removeItem('pk_goalbar'); }catch(e){}
+  location.reload();
+});
+document.getElementById('importbtn').addEventListener('click',()=>{
+  const raw = document.getElementById('importurl').value.trim();
+  if(!raw) return;
+  try{
+    const p = new URLSearchParams(raw.includes('?') ? raw.split('?')[1] : raw);
+    if(p.has('label'))   el.label.value   = p.get('label');
+    if(p.has('current')) el.current.value = p.get('current');
+    if(p.has('goal'))    el.goal.value    = p.get('goal');
+    el.prefix.value = p.get('prefix') || '';
+    el.suffix.value = p.get('suffix') || '';
+    el.text.value   = p.get('text')   || '#ffffff';
+    el.height.value = p.get('height') || '30';
+    el.style.value  = p.get('style')  || 'rounded';
+    el.done.value   = p.get('done')   || '';
+    if(p.has('color')){ useCustom=true; customEl.value=p.get('color');
+      document.querySelectorAll('#swatches .sw[data-theme]').forEach(x=>x.classList.remove('on'));
+      document.querySelector('.sw.custom').classList.add('on'); }
+    else { selectSwatch(p.get('theme') || 'teal'); }
+    refresh();
+    const b=document.getElementById('importbtn'); const old=b.textContent;
+    b.textContent='✓'; setTimeout(()=>b.textContent=old,1200);
+  }catch(e){ alert('Invalid link'); }
+});
+
+// відновлення збережених налаштувань
+try{
+  const s = JSON.parse(localStorage.getItem('pk_goalbar')||'null');
+  if(s){ FIELDS.forEach(i=>{ if(s[i]!=null) el[i].value=s[i]; });
+    if(s.custom) customEl.value=s.custom;
+    if(s.useCustom){ useCustom=true; document.querySelector('.sw.custom').classList.add('on'); }
+    else selectSwatch(s.theme||'teal'); }
+  else selectSwatch('teal');
+}catch(e){ selectSwatch('teal'); }
+
+// мова: збережена → браузера → en
+let startLang='en';
+try{ startLang = localStorage.getItem('pk_lang') || (navigator.language||'en').slice(0,2); }catch(e){}
+applyLang(startLang);
+refresh();
+</script>
+</body>
+</html>
