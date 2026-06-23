@@ -126,6 +126,11 @@
       <input id="milestones" value="" placeholder="25, 50, 75">
       <label><span data-i18n="l_height"></span> <span id="hval">30</span> px</label>
       <input id="height" type="range" min="18" max="60" value="30">
+      <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700">
+        <input id="livemode" type="checkbox" style="width:auto;margin:0"> <span id="live_label"></span>
+      </label>
+      <p class="hint" id="live_note"></p>
     </div>
 
     <div class="card">
@@ -166,13 +171,14 @@ const T = {
   de:{title:"Goal Bar — OBS-Ziel-Widget",free:"kostenlos",sub:"Richte deine Ziel-Leiste ein (Spenden / Abonnenten) → kopiere den Link → füge ihn in OBS als Browser-Quelle ein. Keine Anmeldung, kein Code.",l_label:"Titel (label)",l_current:"Aktuell",l_goal:"Ziel",l_prefix:"Präfix",l_suffix:"Suffix",ph_prefix:"$ / € / £",ph_suffix:"z. B. subs",l_theme:"Thema (Balkenfarbe)",l_style:"Balkenstil",st_rounded:"Abgerundet",st_flat:"Flach",st_striped:"Gestreift",l_done:"Nachricht bei 100% (optional)",ph_done:"z. B. Ziel erreicht!",l_text:"Textfarbe",l_height:"Balkenhöhe:",l_preview:"Live-Vorschau (transparent — wie in OBS)",hint_preview:"Karos = Transparenz (hier erscheint deine Szene in OBS).",l_url:"Link für OBS",hint_size:"Empfohlene OBS-Quellengröße: Breite ~600, Höhe ~150.",btn_copy:"📋 Kopieren",btn_copied:"✓ Kopiert!",btn_newtab:"↗ Widget öffnen",btn_reset:"↺ Zurücksetzen",obs_title:"So fügst du es in OBS ein:",obs_1:"Kopiere den Link oben.",obs_2:"In OBS: Quellen → + → Browser.",obs_3:"Füge den Link ins URL-Feld ein. Größe: Breite ~600, Höhe ~150.",obs_4:"Fertig — die Leiste erscheint in deiner Szene. Um die Zahl zu aktualisieren, ändere Aktuell und füge den neuen Link ein.",hint_v1:"v1 — die Zahl wird manuell gesetzt. Auto-Sync (StreamElements / Ko-fi) ist geplant (v2).",footer:"Goal Bar · © 2026 PixelKava · kostenlos · ko-fi.com/pixelkava"}
 };
 const IMP = {
-  en:{l:"Have a widget link? Paste it to edit:",b:"Load",m:"Milestones (values, comma-separated)"},
-  uk:{l:"Маєш посилання віджета? Встав, щоб редагувати:",b:"Завантажити",m:"Етапи (значення через кому)"},
-  es:{l:"¿Tienes un enlace del widget? Pégalo para editar:",b:"Cargar",m:"Hitos (valores, separados por comas)"},
-  pt:{l:"Tem um link do widget? Cole para editar:",b:"Carregar",m:"Marcos (valores, separados por vírgula)"},
-  de:{l:"Hast du einen Widget-Link? Zum Bearbeiten einfügen:",b:"Laden",m:"Meilensteine (Werte, Komma-getrennt)"}
+  en:{l:"Have a widget link? Paste it to edit:",b:"Load",m:"Milestones (values, comma-separated)",lv:"🔴 Live mode (auto-update from Ko-fi)",ln:"The bar updates live from Ko-fi donations (one-time Ko-fi webhook setup needed)."},
+  uk:{l:"Маєш посилання віджета? Встав, щоб редагувати:",b:"Завантажити",m:"Етапи (значення через кому)",lv:"🔴 Живий режим (авто-оновлення з Ko-fi)",ln:"Смужка оновлюється з Ko-fi-донатів (потрібне одноразове підключення Ko-fi webhook)."},
+  es:{l:"¿Tienes un enlace del widget? Pégalo para editar:",b:"Cargar",m:"Hitos (valores, separados por comas)",lv:"🔴 Modo en vivo (auto desde Ko-fi)",ln:"La barra se actualiza en vivo con las donaciones de Ko-fi (configuración única del webhook de Ko-fi)."},
+  pt:{l:"Tem um link do widget? Cole para editar:",b:"Carregar",m:"Marcos (valores, separados por vírgula)",lv:"🔴 Modo ao vivo (auto do Ko-fi)",ln:"A barra atualiza ao vivo com as doações do Ko-fi (config única do webhook do Ko-fi)."},
+  de:{l:"Hast du einen Widget-Link? Zum Bearbeiten einfügen:",b:"Laden",m:"Meilensteine (Werte, Komma-getrennt)",lv:"🔴 Live-Modus (auto von Ko-fi)",ln:"Der Balken aktualisiert sich live von Ko-fi-Spenden (einmalige Ko-fi-Webhook-Einrichtung)."}
 };
 const FIELDS = ['label','current','goal','prefix','suffix','text','height','style','done','milestones'];
+const WORKER_API = 'https://pixelkava-goalbar.rolex1177.workers.dev/total'; // живий режим (поки single-tenant)
 const el = {}; FIELDS.forEach(i => el[i] = document.getElementById(i));
 const customEl = document.getElementById('customcolor');
 let lang = 'en', theme = 'teal', useCustom = false;
@@ -186,6 +192,8 @@ function applyLang(l){
   document.getElementById('imp_label').textContent = IMP[lang].l;
   document.getElementById('importbtn').textContent = IMP[lang].b;
   document.getElementById('mile_label').textContent = IMP[lang].m;
+  document.getElementById('live_label').textContent = IMP[lang].lv;
+  document.getElementById('live_note').textContent = IMP[lang].ln;
   try{ localStorage.setItem('pk_lang', lang); }catch(e){}
 }
 function buildParams(){
@@ -201,6 +209,7 @@ function buildParams(){
   if (el.style.value !== 'rounded') p.set('style', el.style.value);
   if (el.done.value) p.set('done', el.done.value);
   if (el.milestones.value) p.set('milestones', el.milestones.value);
+  if (document.getElementById('livemode').checked) p.set('api', WORKER_API);
   return p.toString();
 }
 function save(){
@@ -222,6 +231,7 @@ function selectSwatch(t){
   document.querySelector('.sw.custom').classList.remove('on');
 }
 FIELDS.forEach(i=>el[i].addEventListener('input', refresh));
+document.getElementById('livemode').addEventListener('change', refresh);
 document.querySelectorAll('#swatches .sw[data-theme]').forEach(s=>s.addEventListener('click',()=>{ selectSwatch(s.dataset.theme); refresh(); }));
 customEl.addEventListener('input', ()=>{
   useCustom = true;
