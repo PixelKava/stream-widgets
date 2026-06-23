@@ -64,14 +64,20 @@
   if (style === 'striped') document.getElementById('wrap').classList.add('striped');
   document.getElementById('label').textContent = g('label', 'Donation Goal');
   const pre = g('prefix', ''), suf = g('suffix', '');
-  const pct = Math.min(100, Math.round(cur / goal * 100));
   const fillEl = document.getElementById('fill');
   const doneMsg = g('done', '');
-  if (g('showvalues','1') !== '0')
-    document.getElementById('values').textContent =
-      (pct >= 100 && doneMsg) ? doneMsg : (pre + cur + suf + '  /  ' + pre + goal + suf);
-  document.getElementById('pct').textContent = pct + '%';
-  if (pct >= 100) fillEl.classList.add('reached');
+  const showvals = g('showvalues','1') !== '0';
+
+  // оновлює числа/відсоток/заповнення під поточні значення (разово АБО періодично в живому режимі)
+  function render(c, gl) {
+    c = Math.max(0, c); gl = Math.max(1, gl);
+    const pct = Math.min(100, Math.round(c / gl * 100));
+    if (showvals) document.getElementById('values').textContent =
+      (pct >= 100 && doneMsg) ? doneMsg : (pre + c + suf + '  /  ' + pre + gl + suf);
+    document.getElementById('pct').textContent = pct + '%';
+    fillEl.classList.toggle('reached', pct >= 100);
+    fillEl.style.width = pct + '%';
+  }
   // позначки-етапи (milestones): значення через кому → вертикальні риски на смужці
   const ms = g('milestones', '');
   if (ms) {
@@ -86,8 +92,22 @@
       track.appendChild(tick);
     });
   }
-  // невелика затримка → плавна анімація заповнення при завантаженні в OBS
-  requestAnimationFrame(() => setTimeout(() => { fillEl.style.width = pct + '%'; }, 150));
+  // початковий показ із параметрів (плавна анімація при завантаженні в OBS)
+  requestAnimationFrame(() => setTimeout(() => render(cur, goal), 150));
+
+  // 🔴 ЖИВИЙ РЕЖИМ: якщо є ?api=... — періодично тягнемо реальну суму з Worker
+  const api = g('api', '');
+  if (api) {
+    async function poll() {
+      try {
+        const res = await fetch(api, { cache: 'no-store' });
+        const d = await res.json();
+        render(+d.current, +d.goal);
+      } catch (e) {}
+    }
+    poll();                  // одразу
+    setInterval(poll, 7000); // і кожні 7 секунд
+  }
 </script>
 </body>
 </html>
