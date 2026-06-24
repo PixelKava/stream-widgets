@@ -127,10 +127,17 @@
       <label><span data-i18n="l_height"></span> <span id="hval">30</span> px</label>
       <input id="height" type="range" min="18" max="60" value="30">
       <hr style="border:0;border-top:1px solid var(--line);margin:16px 0">
-      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700">
-        <input id="livemode" type="checkbox" style="width:auto;margin:0"> <span id="live_label"></span>
-      </label>
-      <p class="hint" id="live_note"></p>
+      <!-- Живий режим: дві версії — якщо Ko-fi підключено (є ?id=) показуємо перемикач; інакше — кнопку «Підключити» -->
+      <div id="liveConnected" style="display:none">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700">
+          <input id="livemode" type="checkbox" style="width:auto;margin:0"> <span id="live_label"></span>
+        </label>
+        <p class="hint" id="live_note"></p>
+      </div>
+      <div id="liveConnect" style="display:none">
+        <a class="btn alt" id="connect_link" href="connect.html" style="display:inline-block;text-decoration:none;margin-top:0"></a>
+        <p class="hint" id="connect_note"></p>
+      </div>
     </div>
 
     <div class="card">
@@ -171,14 +178,16 @@ const T = {
   de:{title:"Goal Bar — OBS-Ziel-Widget",free:"kostenlos",sub:"Richte deine Ziel-Leiste ein (Spenden / Abonnenten) → kopiere den Link → füge ihn in OBS als Browser-Quelle ein. Keine Anmeldung, kein Code.",l_label:"Titel (label)",l_current:"Aktuell",l_goal:"Ziel",l_prefix:"Präfix",l_suffix:"Suffix",ph_prefix:"$ / € / £",ph_suffix:"z. B. subs",l_theme:"Thema (Balkenfarbe)",l_style:"Balkenstil",st_rounded:"Abgerundet",st_flat:"Flach",st_striped:"Gestreift",l_done:"Nachricht bei 100% (optional)",ph_done:"z. B. Ziel erreicht!",l_text:"Textfarbe",l_height:"Balkenhöhe:",l_preview:"Live-Vorschau (transparent — wie in OBS)",hint_preview:"Karos = Transparenz (hier erscheint deine Szene in OBS).",l_url:"Link für OBS",hint_size:"Empfohlene OBS-Quellengröße: Breite ~600, Höhe ~150.",btn_copy:"📋 Kopieren",btn_copied:"✓ Kopiert!",btn_newtab:"↗ Widget öffnen",btn_reset:"↺ Zurücksetzen",obs_title:"So fügst du es in OBS ein:",obs_1:"Kopiere den Link oben.",obs_2:"In OBS: Quellen → + → Browser.",obs_3:"Füge den Link ins URL-Feld ein. Größe: Breite ~600, Höhe ~150.",obs_4:"Fertig — die Leiste erscheint in deiner Szene. Um die Zahl zu aktualisieren, ändere Aktuell und füge den neuen Link ein.",hint_v1:"v1 — die Zahl wird manuell gesetzt. Auto-Sync (StreamElements / Ko-fi) ist geplant (v2).",footer:"Goal Bar · © 2026 PixelKava · kostenlos · ko-fi.com/pixelkava"}
 };
 const IMP = {
-  en:{l:"Have a widget link? Paste it to edit:",b:"Load",m:"Milestones (values, comma-separated)",lv:"🔴 Live mode (auto-update from Ko-fi)",ln:"The bar updates live from Ko-fi donations (one-time Ko-fi webhook setup needed)."},
-  uk:{l:"Маєш посилання віджета? Встав, щоб редагувати:",b:"Завантажити",m:"Етапи (значення через кому)",lv:"🔴 Живий режим (авто-оновлення з Ko-fi)",ln:"Смужка оновлюється з Ko-fi-донатів (потрібне одноразове підключення Ko-fi webhook)."},
-  es:{l:"¿Tienes un enlace del widget? Pégalo para editar:",b:"Cargar",m:"Hitos (valores, separados por comas)",lv:"🔴 Modo en vivo (auto desde Ko-fi)",ln:"La barra se actualiza en vivo con las donaciones de Ko-fi (configuración única del webhook de Ko-fi)."},
-  pt:{l:"Tem um link do widget? Cole para editar:",b:"Carregar",m:"Marcos (valores, separados por vírgula)",lv:"🔴 Modo ao vivo (auto do Ko-fi)",ln:"A barra atualiza ao vivo com as doações do Ko-fi (config única do webhook do Ko-fi)."},
-  de:{l:"Hast du einen Widget-Link? Zum Bearbeiten einfügen:",b:"Laden",m:"Meilensteine (Werte, Komma-getrennt)",lv:"🔴 Live-Modus (auto von Ko-fi)",ln:"Der Balken aktualisiert sich live von Ko-fi-Spenden (einmalige Ko-fi-Webhook-Einrichtung)."}
+  en:{l:"Have a widget link? Paste it to edit:",b:"Load",m:"Milestones (values, comma-separated)",lv:"🔴 Live mode (auto-update from Ko-fi)",ln:"Live updates from your connected Ko-fi. Turn off for manual mode.",cl:"🔴 Connect Ko-fi for live mode →",cn:"Free: connect your Ko-fi once → the bar updates from donations automatically."},
+  uk:{l:"Маєш посилання віджета? Встав, щоб редагувати:",b:"Завантажити",m:"Етапи (значення через кому)",lv:"🔴 Живий режим (авто-оновлення з Ko-fi)",ln:"Живі оновлення з твого підключеного Ko-fi. Вимкни для ручного режиму.",cl:"🔴 Підключити Ko-fi для живого режиму →",cn:"Безкоштовно: підключи Ko-fi один раз → смужка оновлюється з донатів сама."},
+  es:{l:"¿Tienes un enlace del widget? Pégalo para editar:",b:"Cargar",m:"Hitos (valores, separados por comas)",lv:"🔴 Modo en vivo (auto desde Ko-fi)",ln:"Actualizaciones en vivo de tu Ko-fi conectado. Desactiva para el modo manual.",cl:"🔴 Conectar Ko-fi para el modo en vivo →",cn:"Gratis: conecta tu Ko-fi una vez → la barra se actualiza con las donaciones."},
+  pt:{l:"Tem um link do widget? Cole para editar:",b:"Carregar",m:"Marcos (valores, separados por vírgula)",lv:"🔴 Modo ao vivo (auto do Ko-fi)",ln:"Atualizações ao vivo do seu Ko-fi conectado. Desligue para o modo manual.",cl:"🔴 Conectar Ko-fi para o modo ao vivo →",cn:"Grátis: conecte o seu Ko-fi uma vez → a barra atualiza com as doações."},
+  de:{l:"Hast du einen Widget-Link? Zum Bearbeiten einfügen:",b:"Laden",m:"Meilensteine (Werte, Komma-getrennt)",lv:"🔴 Live-Modus (auto von Ko-fi)",ln:"Live-Updates von deinem verbundenen Ko-fi. Zum manuellen Modus ausschalten.",cl:"🔴 Ko-fi für den Live-Modus verbinden →",cn:"Kostenlos: einmal Ko-fi verbinden → der Balken aktualisiert sich mit Spenden."}
 };
 const FIELDS = ['label','current','goal','prefix','suffix','text','height','style','done','milestones'];
-const WORKER_API = 'https://pixelkava-goalbar.rolex1177.workers.dev/total'; // живий режим (поки single-tenant)
+const WORKER_API = 'https://pixelkava-goalbar.rolex1177.workers.dev/total'; // живий режим
+// id стрімера приходить із connect.html через ?id=… → живий режим стає персональним
+const MY_ID = (new URLSearchParams(location.search).get('id') || '').replace(/[^a-z0-9]/gi,'').slice(0,64);
 const el = {}; FIELDS.forEach(i => el[i] = document.getElementById(i));
 const customEl = document.getElementById('customcolor');
 let lang = 'en', theme = 'teal', useCustom = false;
@@ -194,6 +203,8 @@ function applyLang(l){
   document.getElementById('mile_label').textContent = IMP[lang].m;
   document.getElementById('live_label').textContent = IMP[lang].lv;
   document.getElementById('live_note').textContent = IMP[lang].ln;
+  document.getElementById('connect_link').textContent = IMP[lang].cl;
+  document.getElementById('connect_note').textContent = IMP[lang].cn;
   try{ localStorage.setItem('pk_lang', lang); }catch(e){}
 }
 function buildParams(){
@@ -209,7 +220,7 @@ function buildParams(){
   if (el.style.value !== 'rounded') p.set('style', el.style.value);
   if (el.done.value) p.set('done', el.done.value);
   if (el.milestones.value) p.set('milestones', el.milestones.value);
-  if (document.getElementById('livemode').checked) p.set('api', WORKER_API);
+  if (MY_ID && document.getElementById('livemode').checked) p.set('api', WORKER_API + '?id=' + MY_ID);
   return p.toString();
 }
 function save(){
@@ -282,6 +293,14 @@ try{
     else selectSwatch(s.theme||'teal'); }
   else selectSwatch('teal');
 }catch(e){ selectSwatch('teal'); }
+
+// Фаза 3: жива версія залежить від наявності ?id= (приходить із connect.html)
+if (MY_ID) {
+  document.getElementById('liveConnected').style.display = 'block';
+  document.getElementById('livemode').checked = true; // підключено → вмикаємо живий режим
+} else {
+  document.getElementById('liveConnect').style.display = 'block'; // ще не підключено → кнопка на connect.html
+}
 
 // мова: збережена → браузера → en
 let startLang='en';

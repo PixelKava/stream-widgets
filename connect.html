@@ -112,6 +112,7 @@
       <p class="hint" id="t_rn_reset"></p>
       <div class="warn" id="t_warn_reset"></div>
     </div>
+    <a class="btn" id="customizeBtn" href="index.html" style="display:inline-block;text-decoration:none;margin-top:6px"></a>
   </div>
 
   <footer>© 2026 PixelKava · <a href="index.html" id="t_nav_builder"></a> · <a href="https://ko-fi.com/pixelkava" rel="noopener">ko-fi.com/pixelkava</a></footer>
@@ -141,6 +142,7 @@ const T = {
     rn_widget:"This is your goal bar. In OBS: Sources → + → Browser → paste this link, size ~600×150. It shows live on your stream.",
     rn_webhook:"This tells Ko-fi where to send donations. In Ko-fi: Settings → Advanced → Webhooks → paste it as the Webhook URL → Save. One time only.",
     rn_reset:"Your private link to reset the goal to 0. Save it as a browser bookmark and open it before each stream.",
+    customize:"🎨 Customize the look (color, style, text) →",
     copy:"Copy", copied:"Copied!",
     setup_h:"Final setup (one time)",
     setup1:"In Ko-fi → Settings → Webhooks: paste the Webhook URL above and save.",
@@ -164,6 +166,7 @@ const T = {
     rn_widget:"Це твоя смужка-ціль. В OBS: Джерела → + → Браузер → встав це посилання, розмір ~600×150. Показується наживо на стрімі.",
     rn_webhook:"Це каже Ko-fi, куди слати донати. У Ko-fi: Settings → Advanced → Webhooks → встав це як Webhook URL → Save. Один раз.",
     rn_reset:"Твоє приватне посилання, щоб обнулити ціль. Збережи як закладку в браузері й відкривай перед кожним стрімом.",
+    customize:"🎨 Налаштувати вигляд (колір, стиль, текст) →",
     copy:"Копіювати", copied:"Скопійовано!",
     setup_h:"Фінальне налаштування (один раз)",
     setup1:"У Ko-fi → Settings → Webhooks: встав Webhook URL згори й збережи.",
@@ -187,6 +190,7 @@ const T = {
     rn_widget:"Es tu barra de meta. En OBS: Fuentes → + → Navegador → pega este enlace, tamaño ~600×150. Se muestra en directo.",
     rn_webhook:"Indica a Ko-fi dónde enviar las donaciones. En Ko-fi: Settings → Advanced → Webhooks → pégalo como Webhook URL → Save. Una sola vez.",
     rn_reset:"Tu enlace privado para poner la meta a 0. Guárdalo como marcador y ábrelo antes de cada directo.",
+    customize:"🎨 Personalizar el aspecto (color, estilo, texto) →",
     copy:"Copiar", copied:"¡Copiado!",
     setup_h:"Configuración final (una vez)",
     setup1:"En Ko-fi → Settings → Webhooks: pega el Webhook URL de arriba y guarda.",
@@ -210,6 +214,7 @@ const T = {
     rn_widget:"É a sua barra de meta. No OBS: Fontes → + → Navegador → cole este link, tamanho ~600×150. Aparece ao vivo na transmissão.",
     rn_webhook:"Diz ao Ko-fi para onde enviar as doações. No Ko-fi: Settings → Advanced → Webhooks → cole como Webhook URL → Save. Uma única vez.",
     rn_reset:"Seu link privado para zerar a meta. Salve como favorito e abra antes de cada live.",
+    customize:"🎨 Personalizar a aparência (cor, estilo, texto) →",
     copy:"Copiar", copied:"Copiado!",
     setup_h:"Configuração final (uma vez)",
     setup1:"No Ko-fi → Settings → Webhooks: cole o Webhook URL acima e salve.",
@@ -233,6 +238,7 @@ const T = {
     rn_widget:"Das ist deine Ziel-Leiste. In OBS: Quellen → + → Browser → diesen Link einfügen, Größe ~600×150. Wird live im Stream angezeigt.",
     rn_webhook:"Sagt Ko-fi, wohin Spenden gesendet werden. In Ko-fi: Settings → Advanced → Webhooks → als Webhook-URL einfügen → Save. Nur einmal.",
     rn_reset:"Dein privater Link, um das Ziel auf 0 zu setzen. Als Lesezeichen speichern und vor jedem Stream öffnen.",
+    customize:"🎨 Aussehen anpassen (Farbe, Stil, Text) →",
     copy:"Kopieren", copied:"Kopiert!",
     setup_h:"Letzte Einrichtung (einmalig)",
     setup1:"In Ko-fi → Settings → Webhooks: die obige Webhook-URL einfügen und speichern.",
@@ -251,6 +257,7 @@ function applyLang(l){
    "res_h","res_widget","rn_widget","res_webhook","rn_webhook","res_reset","rn_reset","warn_reset","nav_builder"]
     .forEach(k => { const el = document.getElementById("t_"+k); if (el) el.textContent = d[k]; });
   document.getElementById("connectBtn").textContent = d.connect_btn;
+  document.getElementById("customizeBtn").textContent = d.customize;
   document.querySelectorAll("[data-copy]").forEach(b => b.textContent = d.copy);
   document.documentElement.lang = lang;
   document.querySelectorAll("#langs button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
@@ -302,6 +309,7 @@ btn.addEventListener("click", async () => {
     document.getElementById("out_widget").value  = widgetUrl;
     document.getElementById("out_webhook").value = d.webhookUrl;
     document.getElementById("out_reset").value   = d.resetUrl;
+    document.getElementById("customizeBtn").href = "index.html?id=" + encodeURIComponent(d.id); // Фаза 3: вигляд із цим id
     document.getElementById("result").style.display = "block";
     setStatus("", "ok");
     document.getElementById("result").scrollIntoView({ behavior: "smooth" });
