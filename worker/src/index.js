@@ -44,18 +44,39 @@ export default {
     // ── POST /register {token} → реєструє нового стрімера ──────────────────
     // Генерує id + resetKey, зберігає його Ko-fi-токен, ініціалізує лічильник.
     if (url.pathname === "/register" && request.method === "POST") {
-      // антиспам: не більше 5 реєстрацій за годину з однієї IP
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-      const rlKey = "rl:" + ip;
-      const rl = parseInt(await env.GOALS.get(rlKey)) || 0;
-      if (rl >= 5) return json({ error: "rate_limited" }, 429);
 
+      // читаємо тіло запиту
       let body;
       try {
         body = await request.json();
       } catch (e) {
         return json({ error: "bad_json" }, 400);
       }
+
+      // 🤖 АНТИ-БОТ (Turnstile): вмикається САМО, щойно задано секрет TURNSTILE_SECRET.
+      // Поки секрету нема — пропускаємо (нічого не ламається при поетапному вмиканні).
+      // Перевірку робимо ТУТ, на сервері (ніколи з браузера) — токен від віджета йде в siteverify.
+      if (env.TURNSTILE_SECRET) {
+        const tsToken = (body.turnstileToken || "").trim();
+        if (!tsToken) return json({ error: "captcha" }, 403);
+        const fd = new FormData();
+        fd.append("secret", env.TURNSTILE_SECRET);
+        fd.append("response", tsToken);
+        if (ip !== "unknown") fd.append("remoteip", ip);
+        let ok = false;
+        try {
+          const vr = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: fd });
+          ok = (await vr.json()).success === true;
+        } catch (e) { ok = false; }
+        if (!ok) return json({ error: "captcha" }, 403);
+      }
+
+      // антиспам: не більше 5 реєстрацій за годину з однієї IP
+      const rlKey = "rl:" + ip;
+      const rl = parseInt(await env.GOALS.get(rlKey)) || 0;
+      if (rl >= 5) return json({ error: "rate_limited" }, 429);
+
       const token = (body.token || "").trim();
       // валідація формату токена (розумна довжина, не довіряємо вводу)
       if (token.length < 6 || token.length > 200) {

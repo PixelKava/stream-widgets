@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Безпека: CSP — лише власні ресурси + мережа ТІЛЬКИ до нашого Worker (для /register).
      Урок Goal Bar (23.06): робиш fetch → мусиш дозволити його в connect-src, інакше default-src тихо блокує. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src https://pixelkava-goalbar.rolex1177.workers.dev; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://challenges.cloudflare.com; style-src 'unsafe-inline'; img-src 'self' data:; connect-src https://pixelkava-goalbar.rolex1177.workers.dev https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <title>Connect your Ko-fi — live Goal Bar | PixelKava</title>
 <!-- PixelKava Goal Bar · © 2026 PixelKava · All rights reserved · ko-fi.com/pixelkava -->
@@ -50,7 +50,10 @@
   .steps ol{margin-left:20px} .steps li{margin:7px 0}
   footer{margin-top:24px;color:var(--muted);font-size:13px;text-align:center}
   a{color:var(--teal)}
+  .cf-turnstile{margin:14px 0}
 </style>
+<!-- Cloudflare Turnstile (анти-бот капча) -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <div class="wrap">
@@ -83,6 +86,8 @@
     <label id="t_tok_label" for="token"></label>
     <input id="token" type="text" autocomplete="off" spellcheck="false" placeholder="Ko-fi Verification Token">
     <p class="hint" id="t_tok_hint"></p>
+    <!-- Turnstile: ВСТАВ свій data-sitekey (публічний ключ із Cloudflare → Turnstile). -->
+    <div class="cf-turnstile" data-sitekey="PASTE_YOUR_SITEKEY_HERE" data-action="turnstile-spin-v1"></div>
     <button class="btn" id="connectBtn"></button>
     <div class="status" id="status"></div>
   </div>
@@ -135,7 +140,7 @@ const T = {
     conn_h:"Connect", tok_label:"Your Ko-fi Verification Token",
     tok_hint:"Find it in Ko-fi → Settings → Advanced → Webhooks → “Verification Token”. We use it only to confirm your donations.",
     connect_btn:"Connect Ko-fi", connecting:"Connecting…",
-    err_generic:"Something went wrong. Please try again.", err_rate:"Too many tries. Please wait an hour and retry.", err_token:"That token looks invalid. Copy it again from Ko-fi.",
+    err_generic:"Something went wrong. Please try again.", err_rate:"Too many tries. Please wait an hour and retry.", err_token:"That token looks invalid. Copy it again from Ko-fi.", err_captcha:"Please complete the “I'm human” check, then try again.",
     res_h:"✅ Your live goal bar is ready",
     res_widget:"1) Widget link — paste this in OBS:", res_webhook:"2) Webhook URL — paste this in Ko-fi:", res_reset:"3) Reset bookmark — open before a stream to reset to 0:",
     warn_reset:"⚠ Keep this reset link private — it is your personal reset key. Save it as a browser bookmark.",
@@ -155,7 +160,7 @@ const T = {
     conn_h:"Підключення", tok_label:"Твій Ko-fi Verification Token",
     tok_hint:"Знайди його в Ko-fi → Settings → Advanced → Webhooks → «Verification Token». Ми використовуємо його лише для підтвердження твоїх донатів.",
     connect_btn:"Підключити Ko-fi", connecting:"Підключаю…",
-    err_generic:"Щось пішло не так. Спробуй ще раз.", err_rate:"Забагато спроб. Зачекай годину й спробуй знову.", err_token:"Токен виглядає неправильним. Скопіюй його з Ko-fi ще раз.",
+    err_generic:"Щось пішло не так. Спробуй ще раз.", err_rate:"Забагато спроб. Зачекай годину й спробуй знову.", err_token:"Токен виглядає неправильним. Скопіюй його з Ko-fi ще раз.", err_captcha:"Пройди перевірку «я не робот» і спробуй ще раз.",
     res_h:"✅ Твоя жива смужка готова",
     res_widget:"1) Посилання віджета — встав у OBS:", res_webhook:"2) Webhook URL — встав у Ko-fi:", res_reset:"3) Закладка скиду — відкрий перед стрімом, щоб обнулити:",
     warn_reset:"⚠ Тримай це посилання приватно — це твій особистий ключ скиду. Збережи як закладку в браузері.",
@@ -175,7 +180,7 @@ const T = {
     conn_h:"Conectar", tok_label:"Tu Ko-fi Verification Token",
     tok_hint:"Lo encuentras en Ko-fi → Settings → Advanced → Webhooks → “Verification Token”. Solo lo usamos para confirmar tus donaciones.",
     connect_btn:"Conectar Ko-fi", connecting:"Conectando…",
-    err_generic:"Algo salió mal. Inténtalo de nuevo.", err_rate:"Demasiados intentos. Espera una hora y reintenta.", err_token:"Ese token parece inválido. Cópialo otra vez desde Ko-fi.",
+    err_generic:"Algo salió mal. Inténtalo de nuevo.", err_rate:"Demasiados intentos. Espera una hora y reintenta.", err_token:"Ese token parece inválido. Cópialo otra vez desde Ko-fi.", err_captcha:"Completa la verificación «no soy un robot» e inténtalo de nuevo.",
     res_h:"✅ Tu barra de meta en vivo está lista",
     res_widget:"1) Enlace del widget — pégalo en OBS:", res_webhook:"2) Webhook URL — pégalo en Ko-fi:", res_reset:"3) Marcador de reinicio — ábrelo antes del directo para volver a 0:",
     warn_reset:"⚠ Mantén este enlace privado — es tu clave personal de reinicio. Guárdalo como marcador.",
@@ -195,7 +200,7 @@ const T = {
     conn_h:"Conectar", tok_label:"O seu Ko-fi Verification Token",
     tok_hint:"Encontre em Ko-fi → Settings → Advanced → Webhooks → “Verification Token”. Usamos apenas para confirmar as suas doações.",
     connect_btn:"Conectar Ko-fi", connecting:"Conectando…",
-    err_generic:"Algo deu errado. Tente novamente.", err_rate:"Tentativas demais. Espere uma hora e tente de novo.", err_token:"Esse token parece inválido. Copie-o de novo do Ko-fi.",
+    err_generic:"Algo deu errado. Tente novamente.", err_rate:"Tentativas demais. Espere uma hora e tente de novo.", err_token:"Esse token parece inválido. Copie-o de novo do Ko-fi.", err_captcha:"Complete a verificação «não sou um robô» e tente de novo.",
     res_h:"✅ A sua barra de meta ao vivo está pronta",
     res_widget:"1) Link do widget — cole no OBS:", res_webhook:"2) Webhook URL — cole no Ko-fi:", res_reset:"3) Favorito de reset — abra antes da live para zerar:",
     warn_reset:"⚠ Mantenha este link privado — é a sua chave pessoal de reset. Salve como favorito.",
@@ -215,7 +220,7 @@ const T = {
     conn_h:"Verbinden", tok_label:"Dein Ko-fi Verification Token",
     tok_hint:"Zu finden in Ko-fi → Settings → Advanced → Webhooks → „Verification Token“. Wir nutzen ihn nur, um deine Spenden zu bestätigen.",
     connect_btn:"Ko-fi verbinden", connecting:"Verbinde…",
-    err_generic:"Etwas ist schiefgelaufen. Bitte erneut versuchen.", err_rate:"Zu viele Versuche. Bitte eine Stunde warten und erneut versuchen.", err_token:"Dieser Token sieht ungültig aus. Kopiere ihn erneut aus Ko-fi.",
+    err_generic:"Etwas ist schiefgelaufen. Bitte erneut versuchen.", err_rate:"Zu viele Versuche. Bitte eine Stunde warten und erneut versuchen.", err_token:"Dieser Token sieht ungültig aus. Kopiere ihn erneut aus Ko-fi.", err_captcha:"Bitte die „Ich bin kein Roboter“-Prüfung abschließen und erneut versuchen.",
     res_h:"✅ Deine Live-Ziel-Leiste ist bereit",
     res_widget:"1) Widget-Link — in OBS einfügen:", res_webhook:"2) Webhook-URL — in Ko-fi einfügen:", res_reset:"3) Reset-Lesezeichen — vor dem Stream öffnen, um auf 0 zu setzen:",
     warn_reset:"⚠ Halte diesen Link privat — es ist dein persönlicher Reset-Schlüssel. Als Lesezeichen speichern.",
@@ -259,19 +264,24 @@ const btn = document.getElementById("connectBtn");
 const statusEl = document.getElementById("status");
 
 function setStatus(msg, kind){ statusEl.textContent = msg; statusEl.className = "status" + (kind ? " "+kind : ""); }
+function resetTs(){ try { window.turnstile && turnstile.reset(); } catch(e){} } // скинути капчу (токен одноразовий)
 
 btn.addEventListener("click", async () => {
   const token = document.getElementById("token").value.trim();
   if (token.length < 6) { setStatus(T[lang].err_token, "err"); return; }
+  // токен Turnstile (порожній, якщо капчу ще не пройдено/не налаштовано)
+  const tsToken = (window.turnstile && turnstile.getResponse()) ||
+    (document.querySelector('[name="cf-turnstile-response"]') || {}).value || "";
   btn.disabled = true; setStatus(T[lang].connecting, "");
   try {
     const res = await fetch(WORKER + "/register", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }), cache: "no-store"
+      body: JSON.stringify({ token, turnstileToken: tsToken }), cache: "no-store"
     });
-    if (res.status === 429) { setStatus(T[lang].err_rate, "err"); btn.disabled = false; return; }
-    if (res.status === 400) { setStatus(T[lang].err_token, "err"); btn.disabled = false; return; }
-    if (!res.ok) { setStatus(T[lang].err_generic, "err"); btn.disabled = false; return; }
+    if (res.status === 403) { setStatus(T[lang].err_captcha, "err"); resetTs(); btn.disabled = false; return; }
+    if (res.status === 429) { setStatus(T[lang].err_rate, "err"); resetTs(); btn.disabled = false; return; }
+    if (res.status === 400) { setStatus(T[lang].err_token, "err"); resetTs(); btn.disabled = false; return; }
+    if (!res.ok) { setStatus(T[lang].err_generic, "err"); resetTs(); btn.disabled = false; return; }
     const d = await res.json();
 
     // будуємо посилання віджета (api = totalUrl, коректно закодований)
@@ -287,7 +297,7 @@ btn.addEventListener("click", async () => {
     setStatus("", "ok");
     document.getElementById("result").scrollIntoView({ behavior: "smooth" });
   } catch (e) {
-    setStatus(T[lang].err_generic, "err"); btn.disabled = false;
+    setStatus(T[lang].err_generic, "err"); resetTs(); btn.disabled = false;
   }
 });
 
