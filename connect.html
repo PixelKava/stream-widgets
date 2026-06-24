@@ -99,24 +99,18 @@
     <div class="field">
       <label id="t_res_widget"></label>
       <div class="row"><textarea id="out_widget" readonly></textarea><button class="btn alt" data-copy="out_widget"></button></div>
+      <p class="hint" id="t_rn_widget"></p>
     </div>
     <div class="field">
       <label id="t_res_webhook"></label>
       <div class="row"><textarea id="out_webhook" readonly></textarea><button class="btn alt" data-copy="out_webhook"></button></div>
+      <p class="hint" id="t_rn_webhook"></p>
     </div>
     <div class="field">
       <label id="t_res_reset"></label>
       <div class="row"><textarea id="out_reset" readonly></textarea><button class="btn alt" data-copy="out_reset"></button></div>
+      <p class="hint" id="t_rn_reset"></p>
       <div class="warn" id="t_warn_reset"></div>
-    </div>
-
-    <div class="steps" style="margin-top:18px">
-      <h2 id="t_setup_h"></h2>
-      <ol>
-        <li id="t_setup1"></li>
-        <li id="t_setup2"></li>
-        <li id="t_setup3"></li>
-      </ol>
     </div>
   </div>
 
@@ -144,6 +138,9 @@ const T = {
     res_h:"✅ Your live goal bar is ready",
     res_widget:"1) Widget link — paste this in OBS:", res_webhook:"2) Webhook URL — paste this in Ko-fi:", res_reset:"3) Reset bookmark — open before a stream to reset to 0:",
     warn_reset:"⚠ Keep this reset link private — it is your personal reset key. Save it as a browser bookmark.",
+    rn_widget:"This is your goal bar. In OBS: Sources → + → Browser → paste this link, size ~600×150. It shows live on your stream.",
+    rn_webhook:"This tells Ko-fi where to send donations. In Ko-fi: Settings → Advanced → Webhooks → paste it as the Webhook URL → Save. One time only.",
+    rn_reset:"Your private link to reset the goal to 0. Save it as a browser bookmark and open it before each stream.",
     copy:"Copy", copied:"Copied!",
     setup_h:"Final setup (one time)",
     setup1:"In Ko-fi → Settings → Webhooks: paste the Webhook URL above and save.",
@@ -164,6 +161,9 @@ const T = {
     res_h:"✅ Твоя жива смужка готова",
     res_widget:"1) Посилання віджета — встав у OBS:", res_webhook:"2) Webhook URL — встав у Ko-fi:", res_reset:"3) Закладка скиду — відкрий перед стрімом, щоб обнулити:",
     warn_reset:"⚠ Тримай це посилання приватно — це твій особистий ключ скиду. Збережи як закладку в браузері.",
+    rn_widget:"Це твоя смужка-ціль. В OBS: Джерела → + → Браузер → встав це посилання, розмір ~600×150. Показується наживо на стрімі.",
+    rn_webhook:"Це каже Ko-fi, куди слати донати. У Ko-fi: Settings → Advanced → Webhooks → встав це як Webhook URL → Save. Один раз.",
+    rn_reset:"Твоє приватне посилання, щоб обнулити ціль. Збережи як закладку в браузері й відкривай перед кожним стрімом.",
     copy:"Копіювати", copied:"Скопійовано!",
     setup_h:"Фінальне налаштування (один раз)",
     setup1:"У Ko-fi → Settings → Webhooks: встав Webhook URL згори й збережи.",
@@ -184,6 +184,9 @@ const T = {
     res_h:"✅ Tu barra de meta en vivo está lista",
     res_widget:"1) Enlace del widget — pégalo en OBS:", res_webhook:"2) Webhook URL — pégalo en Ko-fi:", res_reset:"3) Marcador de reinicio — ábrelo antes del directo para volver a 0:",
     warn_reset:"⚠ Mantén este enlace privado — es tu clave personal de reinicio. Guárdalo como marcador.",
+    rn_widget:"Es tu barra de meta. En OBS: Fuentes → + → Navegador → pega este enlace, tamaño ~600×150. Se muestra en directo.",
+    rn_webhook:"Indica a Ko-fi dónde enviar las donaciones. En Ko-fi: Settings → Advanced → Webhooks → pégalo como Webhook URL → Save. Una sola vez.",
+    rn_reset:"Tu enlace privado para poner la meta a 0. Guárdalo como marcador y ábrelo antes de cada directo.",
     copy:"Copiar", copied:"¡Copiado!",
     setup_h:"Configuración final (una vez)",
     setup1:"En Ko-fi → Settings → Webhooks: pega el Webhook URL de arriba y guarda.",
@@ -204,6 +207,9 @@ const T = {
     res_h:"✅ A sua barra de meta ao vivo está pronta",
     res_widget:"1) Link do widget — cole no OBS:", res_webhook:"2) Webhook URL — cole no Ko-fi:", res_reset:"3) Favorito de reset — abra antes da live para zerar:",
     warn_reset:"⚠ Mantenha este link privado — é a sua chave pessoal de reset. Salve como favorito.",
+    rn_widget:"É a sua barra de meta. No OBS: Fontes → + → Navegador → cole este link, tamanho ~600×150. Aparece ao vivo na transmissão.",
+    rn_webhook:"Diz ao Ko-fi para onde enviar as doações. No Ko-fi: Settings → Advanced → Webhooks → cole como Webhook URL → Save. Uma única vez.",
+    rn_reset:"Seu link privado para zerar a meta. Salve como favorito e abra antes de cada live.",
     copy:"Copiar", copied:"Copiado!",
     setup_h:"Configuração final (uma vez)",
     setup1:"No Ko-fi → Settings → Webhooks: cole o Webhook URL acima e salve.",
@@ -224,6 +230,9 @@ const T = {
     res_h:"✅ Deine Live-Ziel-Leiste ist bereit",
     res_widget:"1) Widget-Link — in OBS einfügen:", res_webhook:"2) Webhook-URL — in Ko-fi einfügen:", res_reset:"3) Reset-Lesezeichen — vor dem Stream öffnen, um auf 0 zu setzen:",
     warn_reset:"⚠ Halte diesen Link privat — es ist dein persönlicher Reset-Schlüssel. Als Lesezeichen speichern.",
+    rn_widget:"Das ist deine Ziel-Leiste. In OBS: Quellen → + → Browser → diesen Link einfügen, Größe ~600×150. Wird live im Stream angezeigt.",
+    rn_webhook:"Sagt Ko-fi, wohin Spenden gesendet werden. In Ko-fi: Settings → Advanced → Webhooks → als Webhook-URL einfügen → Save. Nur einmal.",
+    rn_reset:"Dein privater Link, um das Ziel auf 0 zu setzen. Als Lesezeichen speichern und vor jedem Stream öffnen.",
     copy:"Kopieren", copied:"Kopiert!",
     setup_h:"Letzte Einrichtung (einmalig)",
     setup1:"In Ko-fi → Settings → Webhooks: die obige Webhook-URL einfügen und speichern.",
@@ -239,7 +248,7 @@ function applyLang(l){
   const d = T[lang];
   // підписи через textContent (анти-XSS) за id t_<key>
   ["title","sub","how_h","how1","how2","how3","privacy","conn_h","tok_label","tok_hint",
-   "res_h","res_widget","res_webhook","res_reset","warn_reset","setup_h","setup1","setup2","setup3","nav_builder"]
+   "res_h","res_widget","rn_widget","res_webhook","rn_webhook","res_reset","rn_reset","warn_reset","nav_builder"]
     .forEach(k => { const el = document.getElementById("t_"+k); if (el) el.textContent = d[k]; });
   document.getElementById("connectBtn").textContent = d.connect_btn;
   document.querySelectorAll("[data-copy]").forEach(b => b.textContent = d.copy);
