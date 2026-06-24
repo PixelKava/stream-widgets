@@ -123,6 +123,15 @@
     <a class="btn" id="customizeBtn" href="index.html" style="display:inline-block;text-decoration:none;margin-top:6px"></a>
   </div>
 
+  <!-- Онови Ko-fi-токен БЕЗ зміни id (з'являється, коли є збережена реєстрація) -->
+  <div class="card" id="updateCard" style="display:none">
+    <h2 id="t_upd_h"></h2>
+    <p class="hint" id="t_upd_note"></p>
+    <input id="updToken" type="text" autocomplete="off" spellcheck="false" placeholder="New Ko-fi Verification Token">
+    <button class="btn alt" id="updBtn" style="margin-top:10px"></button>
+    <div class="status" id="updStatus"></div>
+  </div>
+
   <footer>© 2026 PixelKava · <a href="index.html" id="t_nav_builder"></a> · <a href="https://ko-fi.com/pixelkava" rel="noopener">ko-fi.com/pixelkava</a></footer>
 </div>
 
@@ -151,6 +160,7 @@ const T = {
     rn_webhook:"This tells Ko-fi where to send donations. In Ko-fi: Settings → Advanced → Webhooks → paste it as the Webhook URL → Save. One time only.",
     rn_reset:"Your private link to reset the goal to 0. Save it as a browser bookmark and open it before each stream.",
     customize:"🎨 Customize the look (color, style, text) →",
+    upd_h:"Update your Ko-fi token", upd_note:"Refreshed your Ko-fi token? Paste the new one — your links (widget, webhook, reset) stay the same.", upd_btn:"Update token", upd_ok:"✓ Token updated — donations will count again.", upd_err:"Couldn't update. Please try again.",
     tab_build:"🎨 Builder", tab_conn:"🔴 Connect Ko-fi",
     copy:"Copy", copied:"Copied!",
     setup_h:"Final setup (one time)",
@@ -176,6 +186,7 @@ const T = {
     rn_webhook:"Це каже Ko-fi, куди слати донати. У Ko-fi: Settings → Advanced → Webhooks → встав це як Webhook URL → Save. Один раз.",
     rn_reset:"Твоє приватне посилання, щоб обнулити ціль. Збережи як закладку в браузері й відкривай перед кожним стрімом.",
     customize:"🎨 Налаштувати вигляд (колір, стиль, текст) →",
+    upd_h:"Онови свій Ko-fi-токен", upd_note:"Оновив токен у Ko-fi? Встав новий — твої посилання (віджет, webhook, скид) лишаються ті самі.", upd_btn:"Оновити токен", upd_ok:"✓ Токен оновлено — донати знову зараховуються.", upd_err:"Не вдалося оновити. Спробуй ще раз.",
     tab_build:"🎨 Конструктор", tab_conn:"🔴 Підключити Ko-fi",
     copy:"Копіювати", copied:"Скопійовано!",
     setup_h:"Фінальне налаштування (один раз)",
@@ -201,6 +212,7 @@ const T = {
     rn_webhook:"Indica a Ko-fi dónde enviar las donaciones. En Ko-fi: Settings → Advanced → Webhooks → pégalo como Webhook URL → Save. Una sola vez.",
     rn_reset:"Tu enlace privado para poner la meta a 0. Guárdalo como marcador y ábrelo antes de cada directo.",
     customize:"🎨 Personalizar el aspecto (color, estilo, texto) →",
+    upd_h:"Actualiza tu token de Ko-fi", upd_note:"¿Refrescaste tu token de Ko-fi? Pega el nuevo — tus enlaces (widget, webhook, reinicio) no cambian.", upd_btn:"Actualizar token", upd_ok:"✓ Token actualizado — las donaciones vuelven a contar.", upd_err:"No se pudo actualizar. Inténtalo de nuevo.",
     tab_build:"🎨 Editor", tab_conn:"🔴 Conectar Ko-fi",
     copy:"Copiar", copied:"¡Copiado!",
     setup_h:"Configuración final (una vez)",
@@ -226,6 +238,7 @@ const T = {
     rn_webhook:"Diz ao Ko-fi para onde enviar as doações. No Ko-fi: Settings → Advanced → Webhooks → cole como Webhook URL → Save. Uma única vez.",
     rn_reset:"Seu link privado para zerar a meta. Salve como favorito e abra antes de cada live.",
     customize:"🎨 Personalizar a aparência (cor, estilo, texto) →",
+    upd_h:"Atualize o seu token do Ko-fi", upd_note:"Atualizou o token do Ko-fi? Cole o novo — seus links (widget, webhook, reset) continuam os mesmos.", upd_btn:"Atualizar token", upd_ok:"✓ Token atualizado — as doações voltam a contar.", upd_err:"Não foi possível atualizar. Tente de novo.",
     tab_build:"🎨 Editor", tab_conn:"🔴 Conectar Ko-fi",
     copy:"Copiar", copied:"Copiado!",
     setup_h:"Configuração final (uma vez)",
@@ -251,6 +264,7 @@ const T = {
     rn_webhook:"Sagt Ko-fi, wohin Spenden gesendet werden. In Ko-fi: Settings → Advanced → Webhooks → als Webhook-URL einfügen → Save. Nur einmal.",
     rn_reset:"Dein privater Link, um das Ziel auf 0 zu setzen. Als Lesezeichen speichern und vor jedem Stream öffnen.",
     customize:"🎨 Aussehen anpassen (Farbe, Stil, Text) →",
+    upd_h:"Aktualisiere deinen Ko-fi-Token", upd_note:"Ko-fi-Token erneuert? Füge den neuen ein — deine Links (Widget, Webhook, Reset) bleiben gleich.", upd_btn:"Token aktualisieren", upd_ok:"✓ Token aktualisiert — Spenden zählen wieder.", upd_err:"Aktualisierung fehlgeschlagen. Bitte erneut versuchen.",
     tab_build:"🎨 Editor", tab_conn:"🔴 Ko-fi verbinden",
     copy:"Kopieren", copied:"Kopiert!",
     setup_h:"Letzte Einrichtung (einmalig)",
@@ -261,16 +275,18 @@ const T = {
 };
 
 let lang = "en";
+let SAVED = null; // збережена реєстрація {id, resetKey, ...} — для оновлення токена без зміни id
 
 function applyLang(l){
   lang = T[l] ? l : "en";
   const d = T[lang];
   // підписи через textContent (анти-XSS) за id t_<key>
   ["title","sub","tab_build","tab_conn","how_h","how1","how2","how3","privacy","conn_h","tok_label","tok_hint",
-   "res_h","res_widget","rn_widget","res_webhook","rn_webhook","res_reset","rn_reset","warn_reset","nav_builder"]
+   "res_h","res_widget","rn_widget","res_webhook","rn_webhook","res_reset","rn_reset","warn_reset","upd_h","upd_note","nav_builder"]
     .forEach(k => { const el = document.getElementById("t_"+k); if (el) el.textContent = d[k]; });
   document.getElementById("connectBtn").textContent = d.connect_btn;
   document.getElementById("customizeBtn").textContent = d.customize;
+  document.getElementById("updBtn").textContent = d.upd_btn;
   document.querySelectorAll("[data-copy]").forEach(b => b.textContent = d.copy);
   document.documentElement.lang = lang;
   document.querySelectorAll("#langs button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
@@ -325,7 +341,9 @@ btn.addEventListener("click", async () => {
     document.getElementById("customizeBtn").href = "index.html?id=" + encodeURIComponent(d.id); // Фаза 3: вигляд із цим id
     document.getElementById("result").style.display = "block";
     // зберігаємо результат, щоб посилання й навігація НЕ зникали при поверненні на сторінку
-    try { localStorage.setItem("pk_connect_result", JSON.stringify({ id: d.id, widgetUrl, webhookUrl: d.webhookUrl, resetUrl: d.resetUrl })); } catch (e) {}
+    SAVED = { id: d.id, resetKey: d.resetKey, widgetUrl, webhookUrl: d.webhookUrl, resetUrl: d.resetUrl };
+    try { localStorage.setItem("pk_connect_result", JSON.stringify(SAVED)); } catch (e) {}
+    document.getElementById("updateCard").style.display = "block";
     setStatus("", "ok");
     document.getElementById("result").scrollIntoView({ behavior: "smooth" });
   } catch (e) {
@@ -343,16 +361,38 @@ document.querySelectorAll("[data-copy]").forEach(b => {
   });
 });
 
-// При поверненні на сторінку — показати збережену реєстрацію (посилання + кнопка «Налаштувати вигляд»),
-// щоб навігація не зникала. Капчу проходити НЕ треба — це лише показ збережених посилань.
+// Оновлення Ko-fi-токена без зміни id (авторизація — resetKey зі збереженої реєстрації)
+const updBtn = document.getElementById("updBtn");
+const updStatusEl = document.getElementById("updStatus");
+function setUpd(msg, kind){ updStatusEl.textContent = msg; updStatusEl.className = "status" + (kind ? " " + kind : ""); }
+updBtn.addEventListener("click", async () => {
+  if (!SAVED || !SAVED.id || !SAVED.resetKey) { setUpd(T[lang].upd_err, "err"); return; }
+  const token = document.getElementById("updToken").value.trim();
+  if (token.length < 6) { setUpd(T[lang].err_token, "err"); return; }
+  updBtn.disabled = true; setUpd(T[lang].connecting, "");
+  try {
+    const res = await fetch(WORKER + "/update-token", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: SAVED.id, resetKey: SAVED.resetKey, token }), cache: "no-store"
+    });
+    if (res.ok) { setUpd(T[lang].upd_ok, "ok"); document.getElementById("updToken").value = ""; }
+    else { setUpd(T[lang].upd_err, "err"); }
+  } catch (e) { setUpd(T[lang].upd_err, "err"); }
+  updBtn.disabled = false;
+});
+
+// При поверненні на сторінку — показати збережену реєстрацію (посилання + «Налаштувати вигляд» + оновлення токена),
+// щоб навігація не зникала. Капчу проходити НЕ треба — це лише показ збереженого.
 (function showSavedResult(){
   let r; try { r = JSON.parse(localStorage.getItem("pk_connect_result") || "null"); } catch (e) {}
   if (!r || !r.id) return;
+  SAVED = r;
   document.getElementById("out_widget").value  = r.widgetUrl;
   document.getElementById("out_webhook").value = r.webhookUrl;
   document.getElementById("out_reset").value   = r.resetUrl;
   document.getElementById("customizeBtn").href = "index.html?id=" + encodeURIComponent(r.id);
   document.getElementById("result").style.display = "block";
+  if (r.resetKey) document.getElementById("updateCard").style.display = "block";
 })();
 </script>
 </body>

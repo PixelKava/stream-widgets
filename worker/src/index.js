@@ -103,6 +103,33 @@ export default {
       });
     }
 
+    // ── POST /update-token {id, resetKey, token} → міняє Ko-fi-токен, ЛИШАЮЧИ той самий id ──
+    // Авторизація — через resetKey стрімера (тільки власник його знає). Посилання не змінюються.
+    if (url.pathname === "/update-token" && request.method === "POST") {
+      let body;
+      try {
+        body = await request.json();
+      } catch (e) {
+        return json({ error: "bad_json" }, 400);
+      }
+      const id = cleanId(url.searchParams.get("id") || body.id);
+      const resetKey = (body.resetKey || "").trim();
+      const token = (body.token || "").trim();
+      if (!id) return json({ error: "bad_id" }, 400);
+      if (token.length < 6 || token.length > 200) return json({ error: "bad_token" }, 400);
+
+      const cfgRaw = await env.GOALS.get("cfg:" + id);
+      if (!cfgRaw) return json({ error: "not_found" }, 404);
+      const cfg = JSON.parse(cfgRaw);
+
+      // 🔐 БЕЗПЕКА: лише власник (вірний resetKey) може змінити токен
+      if (!resetKey || resetKey !== cfg.resetKey) return json({ error: "forbidden" }, 403);
+
+      cfg.token = token;
+      await env.GOALS.put("cfg:" + id, JSON.stringify(cfg));
+      return json({ ok: true });
+    }
+
     // ── POST /webhook?id=<id> → Ko-fi надсилає сюди КОЖЕН донат ─────────────
     if (url.pathname === "/webhook" && request.method === "POST") {
       try {
