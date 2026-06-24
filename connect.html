@@ -311,6 +311,8 @@ btn.addEventListener("click", async () => {
     document.getElementById("out_reset").value   = d.resetUrl;
     document.getElementById("customizeBtn").href = "index.html?id=" + encodeURIComponent(d.id); // Фаза 3: вигляд із цим id
     document.getElementById("result").style.display = "block";
+    // зберігаємо результат, щоб посилання й навігація НЕ зникали при поверненні на сторінку
+    try { localStorage.setItem("pk_connect_result", JSON.stringify({ id: d.id, widgetUrl, webhookUrl: d.webhookUrl, resetUrl: d.resetUrl })); } catch (e) {}
     setStatus("", "ok");
     document.getElementById("result").scrollIntoView({ behavior: "smooth" });
   } catch (e) {
@@ -327,6 +329,18 @@ document.querySelectorAll("[data-copy]").forEach(b => {
     setTimeout(() => { b.textContent = T[lang].copy; }, 1400);
   });
 });
+
+// При поверненні на сторінку — показати збережену реєстрацію (посилання + кнопка «Налаштувати вигляд»),
+// щоб навігація не зникала. Капчу проходити НЕ треба — це лише показ збережених посилань.
+(function showSavedResult(){
+  let r; try { r = JSON.parse(localStorage.getItem("pk_connect_result") || "null"); } catch (e) {}
+  if (!r || !r.id) return;
+  document.getElementById("out_widget").value  = r.widgetUrl;
+  document.getElementById("out_webhook").value = r.webhookUrl;
+  document.getElementById("out_reset").value   = r.resetUrl;
+  document.getElementById("customizeBtn").href = "index.html?id=" + encodeURIComponent(r.id);
+  document.getElementById("result").style.display = "block";
+})();
 </script>
 </body>
 </html>
