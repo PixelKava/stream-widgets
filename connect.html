@@ -25,6 +25,9 @@
   .langs{display:flex;gap:6px;flex-wrap:wrap}
   .langs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted)}
   .langs button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .nav{display:flex;gap:8px;margin:14px 0 2px;flex-wrap:wrap}
+  .nav a{text-decoration:none;font-weight:700;font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#fff}
+  .nav a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   h1{font-size:28px;margin:18px 0 4px}
   .sub{color:var(--muted);margin-bottom:20px}
   .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px}
@@ -64,6 +67,11 @@
       <button data-lang="es">Español</button><button data-lang="pt">Português</button>
       <button data-lang="de">Deutsch</button>
     </div>
+  </div>
+
+  <div class="nav">
+    <a href="index.html" id="t_tab_build"></a>
+    <a href="connect.html" class="on" id="t_tab_conn"></a>
   </div>
 
   <h1 id="t_title"></h1>
@@ -143,6 +151,7 @@ const T = {
     rn_webhook:"This tells Ko-fi where to send donations. In Ko-fi: Settings → Advanced → Webhooks → paste it as the Webhook URL → Save. One time only.",
     rn_reset:"Your private link to reset the goal to 0. Save it as a browser bookmark and open it before each stream.",
     customize:"🎨 Customize the look (color, style, text) →",
+    tab_build:"🎨 Builder", tab_conn:"🔴 Connect Ko-fi",
     copy:"Copy", copied:"Copied!",
     setup_h:"Final setup (one time)",
     setup1:"In Ko-fi → Settings → Webhooks: paste the Webhook URL above and save.",
@@ -167,6 +176,7 @@ const T = {
     rn_webhook:"Це каже Ko-fi, куди слати донати. У Ko-fi: Settings → Advanced → Webhooks → встав це як Webhook URL → Save. Один раз.",
     rn_reset:"Твоє приватне посилання, щоб обнулити ціль. Збережи як закладку в браузері й відкривай перед кожним стрімом.",
     customize:"🎨 Налаштувати вигляд (колір, стиль, текст) →",
+    tab_build:"🎨 Конструктор", tab_conn:"🔴 Підключити Ko-fi",
     copy:"Копіювати", copied:"Скопійовано!",
     setup_h:"Фінальне налаштування (один раз)",
     setup1:"У Ko-fi → Settings → Webhooks: встав Webhook URL згори й збережи.",
@@ -191,6 +201,7 @@ const T = {
     rn_webhook:"Indica a Ko-fi dónde enviar las donaciones. En Ko-fi: Settings → Advanced → Webhooks → pégalo como Webhook URL → Save. Una sola vez.",
     rn_reset:"Tu enlace privado para poner la meta a 0. Guárdalo como marcador y ábrelo antes de cada directo.",
     customize:"🎨 Personalizar el aspecto (color, estilo, texto) →",
+    tab_build:"🎨 Editor", tab_conn:"🔴 Conectar Ko-fi",
     copy:"Copiar", copied:"¡Copiado!",
     setup_h:"Configuración final (una vez)",
     setup1:"En Ko-fi → Settings → Webhooks: pega el Webhook URL de arriba y guarda.",
@@ -215,6 +226,7 @@ const T = {
     rn_webhook:"Diz ao Ko-fi para onde enviar as doações. No Ko-fi: Settings → Advanced → Webhooks → cole como Webhook URL → Save. Uma única vez.",
     rn_reset:"Seu link privado para zerar a meta. Salve como favorito e abra antes de cada live.",
     customize:"🎨 Personalizar a aparência (cor, estilo, texto) →",
+    tab_build:"🎨 Editor", tab_conn:"🔴 Conectar Ko-fi",
     copy:"Copiar", copied:"Copiado!",
     setup_h:"Configuração final (uma vez)",
     setup1:"No Ko-fi → Settings → Webhooks: cole o Webhook URL acima e salve.",
@@ -239,6 +251,7 @@ const T = {
     rn_webhook:"Sagt Ko-fi, wohin Spenden gesendet werden. In Ko-fi: Settings → Advanced → Webhooks → als Webhook-URL einfügen → Save. Nur einmal.",
     rn_reset:"Dein privater Link, um das Ziel auf 0 zu setzen. Als Lesezeichen speichern und vor jedem Stream öffnen.",
     customize:"🎨 Aussehen anpassen (Farbe, Stil, Text) →",
+    tab_build:"🎨 Editor", tab_conn:"🔴 Ko-fi verbinden",
     copy:"Kopieren", copied:"Kopiert!",
     setup_h:"Letzte Einrichtung (einmalig)",
     setup1:"In Ko-fi → Settings → Webhooks: die obige Webhook-URL einfügen und speichern.",
@@ -253,7 +266,7 @@ function applyLang(l){
   lang = T[l] ? l : "en";
   const d = T[lang];
   // підписи через textContent (анти-XSS) за id t_<key>
-  ["title","sub","how_h","how1","how2","how3","privacy","conn_h","tok_label","tok_hint",
+  ["title","sub","tab_build","tab_conn","how_h","how1","how2","how3","privacy","conn_h","tok_label","tok_hint",
    "res_h","res_widget","rn_widget","res_webhook","rn_webhook","res_reset","rn_reset","warn_reset","nav_builder"]
     .forEach(k => { const el = document.getElementById("t_"+k); if (el) el.textContent = d[k]; });
   document.getElementById("connectBtn").textContent = d.connect_btn;
