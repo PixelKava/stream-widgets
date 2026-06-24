@@ -65,7 +65,8 @@ cfg:<id> = {
 4. **Тест наживо** (донат у Donatello → за ~1 хв з'явився у смужці).
 
 ## 🌐 На потім — інші платформи (той самий патерн)
-- **push (легко, як Ko-fi):** Streamlabs, StreamElements, Buy Me a Coffee, Patreon, Twitch EventSub (Bits/субки + auto-reset).
+> 🎯 **Стратегія:** Donatello = останній суто-UA крок; **далі курс на глобальний ринок** → пріоритет глобальним платформам (нижче); UA-нішеві (Monobank) — значно пізніше.
+- **push (легко, як Ko-fi) — пріоритет:** Streamlabs, StreamElements, Buy Me a Coffee, Patreon, Twitch EventSub (Bits/субки + auto-reset).
 - **pull/особливе:** Monobank (опитування банки, 🇺🇦), YouTube Super Chat.
 - 🚫 **Уникаємо за цінностями:** DonationAlerts (рос. походження), Boosty (рос.).
 > Архітектура `source` у `cfg:<id>` навмисне зроблена розширюваною — кожна нова платформа = новий `source` + її обробник.
