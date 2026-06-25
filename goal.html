@@ -40,6 +40,8 @@
     margin-top: 10px; font-weight: 700; font-size: 24px; color: var(--text);
     text-shadow: -1.5px -1.5px 0 rgba(0,0,0,.55), 1.5px -1.5px 0 rgba(0,0,0,.55), -1.5px 1.5px 0 rgba(0,0,0,.55), 1.5px 1.5px 0 rgba(0,0,0,.55), 0 2px 7px rgba(0,0,0,.5); }
   .pct { opacity: .85; font-size: 21px; }
+  /* культурна тема (pack): тонка акцентна рамка довкола смужки */
+  .packed .track { box-shadow: inset 0 2px 7px rgba(0,0,0,.16), 0 0 0 2px var(--accent); }
 </style>
 </head>
 <body>
@@ -54,11 +56,21 @@
   const THEMES = { teal:'#1FA89A', coral:'#FF7A6B', sun:'#F6B53C', lilac:'#8E7CDB', green:'#6FB36B' };
   const cur  = Math.max(0, +g('current', 0));
   const goal = Math.max(1, +g('goal', 100));
-  const fillC = THEMES[g('theme','')] || g('color', '#1FA89A');
+  // 🎨 культурні теми (pack) — перекривають кольори своєю автентичною палітрою
+  const PACKS = {
+    vyshyvanka:{fill:'#C5132B',bg:'rgba(255,250,248,.92)',text:'#FFFFFF',accent:'#1C0303'}, // 🇺🇦 червоно-чорний
+    azulejo:   {fill:'#164399',bg:'rgba(247,250,255,.93)',text:'#FFFFFF',accent:'#E4C068'}, // 🇪🇸 синій+золото
+    portugues: {fill:'#0E3C8C',bg:'rgba(247,250,255,.93)',text:'#FFFFFF',accent:'#7FB0E0'}, // 🇵🇹 кобальт+світло-синій
+    folk:      {fill:'#B8324F',bg:'rgba(252,250,250,.92)',text:'#FFFFFF',accent:'#2E5AA8'}, // 🇩🇪 трояндовий+синій
+    celtic:    {fill:'#1F7A3D',bg:'rgba(250,250,245,.92)',text:'#FFFFFF',accent:'#DCB456'}  // 🇬🇧 зелений+золото
+  };
+  const pack = PACKS[g('pack','')] || null;
+  const fillC = pack ? pack.fill : (THEMES[g('theme','')] || g('color', '#1FA89A'));
   const root = document.documentElement.style;
   root.setProperty('--fill', fillC);
-  root.setProperty('--bg',   g('bg',   'rgba(255,255,255,.92)'));
-  root.setProperty('--text', g('text', '#FFFFFF'));
+  root.setProperty('--bg',   pack ? pack.bg   : g('bg',   'rgba(255,255,255,.92)'));
+  root.setProperty('--text', pack ? pack.text : g('text', '#FFFFFF'));
+  if (pack) { root.setProperty('--accent', pack.accent); document.getElementById('wrap').classList.add('packed'); }
   root.setProperty('--h',   (+g('height', 30)) + 'px');
   const style = g('style', 'rounded');
   root.setProperty('--r', style === 'flat' ? '8px' : '999px');
