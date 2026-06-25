@@ -1,7 +1,8 @@
 # 🌍 v5 — Twitch + Streamlabs як джерела донатів (спека)
 
 > **Мета:** живий Goal Bar працює і з **Twitch** (бітси/субки) та **Streamlabs**, не лише Ko-fi.
-> **Стан: ЧЕРНЕТКА** (дослідження зроблено; точні поля/скоупи звіримо при збірці).
+> **Стан: ЧЕРНЕТКА.** ⛔ **TWITCH ЗАБЛОКОВАНО (25.06):** не вдається пройти 2FA — Twitch не приймає номер (помилка «Error updating phone number» на 2 різних Київстар-номерах, навіть в інкогніто; схоже на проблему доставки SMS у Twitch на UA-номери). Без 2FA додаток не створити. **Робимо потім, коли SMS пройде** (спробувати інший оператор / пізніше).
+> 📌 **Де спинились на формі Twitch** (заповнено, лишилось Create після 2FA): Name `PixelKava Goal Bar` · Redirect `https://pixelkava-goalbar.rolex1177.workers.dev/twitch/callback` · Category `Broadcaster Suite` · Client Type `Confidential`. Після Create → дати Claude **Client ID**, а **Secret** → `wrangler secret put TWITCH_SECRET`.
 > Створено 2026-06-25. 🔗 `v3_СПЕК_multi-tenant.md` · `v4_СПЕК_donatello.md` · `БЕЗПЕКА_чеклист-продуктів.md`
 
 ---
